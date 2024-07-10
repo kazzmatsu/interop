@@ -3,32 +3,65 @@ using namespace System.IO
 using namespace System.Text
 using module    ".\ListLoginSheet.PSM1"
 ####################################################################################
-function TeratermEncData ( [object[,]] $EncDat )
+function CommonCmdDetail ( [StreamWriter]$fp, [object[]] $EncDat )
 {
-  $Rstart = 1
-  $PASDTDir  = $([DefFiles]::PASDAT)
-  $PsfileName  = "$($PSScriptRoot)\$($PASDTDir)\PASSWORDs.DAT"
-  if ( !( Test-Path -Path $PsfileName ) )
-  {
-    $fl = New-Object StreamWriter($PsfileName, $false, [Encoding]::GetEncoding("sjis"))
-    $fl.WriteLine("[Password]")
-<#
-    $Rstart..$EncDat.GetLength(0) | % { $Row = $_ 
-      if ( $Row -gt 1 ){ # Ignore the first Record
-        $fl.WriteLine("{0}={1}" -f [string]$EncDat[$Row,2] , [string]$EncDat[$Row,3] )
-      }
-    }
-#>
-    $fl.Close()
-  }
+  $number,  $SendCmd,  $WaitCmd = $EncDat
+  [StreamWriter]$fp.WriteLine("sendln '$($SendCmd)'")
+  [StreamWriter]$fp.WriteLine("wait $($WaitCmd)")
 }
 ####################################################################################
-function MakeTeraTermMacro ( [string[]]$params )
+function TeratermEncDataDetail ( [StreamWriter]$fp, [object[]] $EncDat )
 {
-  $categy    = $params[0]
-  $hostnm    = $params[1]
-  $ipa       = $params[2]
-  $user      = $params[3]
+  $number,  $User,  $encpass = $EncDat
+  [StreamWriter]$fp.WriteLine("$($User)=$($encpass)")
+}
+####################################################################################
+function CommonCmd ( [string]$CCMD, [object[,]] $EncDat )
+{
+  $RStart = 1
+  $LyrCtgy = $CCMD
+  $CommonDir = "$([DefFiles]::Common)"
+  $uFile = "UpDate01"
+  $CmdfileName = "$($PSScriptRoot)\$($CommonDir)\$($LyrCtgy)$($uFile).TTL"
+  if ( !( Test-Path -Path $CmdfileName ) )
+  {
+    $fl = New-Object StreamWriter($CmdfileName, $false, [Encoding]::GetEncoding("sjis"))
+    $RStart..$EncDat.GetLength(0) | %{ $Row = $PSItem 
+      if ( $Row -ne 1 ){
+        CommonCmdDetail $fl $([string]$EncDat[$Row, 1]) , $([string]$EncDat[$Row, 2]) ,$([string]$EncDat[$Row, 3])
+      }
+    }
+    $fl.Close()
+  }
+  return $CmdfileName
+}
+####################################################################################
+function TeratermEncData ( [string]$CCMD, [object[,]] $EncDat )
+{
+  $RStart = 1
+  $PASDTDir  = $([DefFiles]::PASDAT)
+  $PasfileName = "$($PSScriptRoot)\$($PASDTDir)\PASSWORD.DAT"
+
+  if ( !( Test-Path -Path $PasfileName ) )
+  {
+    $fl = New-Object StreamWriter($PasfileName, $false, [Encoding]::GetEncoding("sjis"))
+    $RStart..$EncDat.GetLength(0) | %{ $Row = $PSItem
+      if ( $Row -eq 1 ){
+        $fl.WriteLine("[Password]")
+      }
+      if ( $Row -gt 1 ){
+        TeratermEncDataDetail $fl $([string]$EncDat[$Row, 1]) , $([string]$EncDat[$Row, 2]) ,$([string]$EncDat[$Row, 3])
+      }
+    }
+    $fl.Close()
+  }
+  return $PasfileName
+}
+####################################################################################
+function MakeTeraTermMacro ( [string]$passFile, [string[]]$IncFileName, [string[]]$params )
+{
+  $categy, $hostnm, $ipa, $user = $params
+
   $MacroDir  = $([DefFiles]::TetaTermMacro)
   $CommonDir = "..\$([DefFiles]::Common)"
   $fileName  = "$($PSScriptRoot)\$($MacroDir)\$($categy)_$($hostnm).TTL"
@@ -36,7 +69,7 @@ function MakeTeraTermMacro ( [string[]]$params )
   {
     $fl = New-Object StreamWriter($fileName, $false, [Encoding]::GetEncoding("sjis"))
     $fl.WriteLine("USERNAME = '$user'")
-    $fl.WriteLine("PASSFILE = '$($PSScriptRoot)\$([DefFiles]::PASDAT)\PASSWORD.DAT'")
+    $fl.WriteLine("PASSFILE = '$passFile'")
     $fl.WriteLine("LOGSPATH = '$($PSScriptRoot)\$([DefFiles]::LOG)\'")
     $fl.WriteLine("HOSTADDR = '$ipa'")
     $fl.WriteLine("TITLE = '$hostnm'")
@@ -60,7 +93,7 @@ function MakeTeraTermMacro ( [string[]]$params )
     $fl.WriteLine("if result = 0 then")
     $fl.WriteLine("  end")
     $fl.WriteLine("endif")
-    $fl.WriteLine("include '$($CommonDir)\$($categy)UpDate01.TTL'")
+    $fl.WriteLine("include '$($IncFileName.Where({$PSItem.Contains(($categy).SubString(0,2))}).ForEach({$PSItem}))'")
     $fl.WriteLine("end")
     $fl.Close()
   }
