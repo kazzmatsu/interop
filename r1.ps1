@@ -112,7 +112,7 @@ Function Main ( [string[]]$refargs )
 } 
 
 Main $args
-
+<#
 @ECHO OFF 
 @SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION 
 @REM 
@@ -137,3 +137,4 @@ Main $args
 @ECHO ON 
 @REM 
 @PAUSE
+#>
