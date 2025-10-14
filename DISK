@@ -1,0 +1,165 @@
+https://onoredekaiketsu.com/extend-partition-after-increasing-storage-capacity-with-sakura-vps/
+https://qiita.com/mikanchaaan/items/c9a03eb64954cabe1436
+https://atmarkit.itmedia.co.jp/ait/articles/1910/04/news021.html
+
+
+swapoff /dev/mapper/rhel-swap
+swapon --show
+lvreduce -L 8G /dev/mapper/rhel-swap
+mkswap /dev/mapper/rhel-swap
+swapon /dev/mapper/rhel-swap
+swapon --show
+
+[root@d9ivioststv22602 unyoadm01]# lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda             8:0    0   20G  0 disk
+tqsda1          8:1    0  8.9G  0 part
+mqsda2          8:2    0  6.9M  0 part
+vda           252:0    0   50G  0 disk
+tqvda1        252:1    0  600M  0 part /boot/efi
+tqvda2        252:2    0    1G  0 part /boot
+mqvda3        252:3    0 48.4G  0 part
+  tqrhel-root 253:0    0 28.4G  0 lvm  /
+  mqrhel-swap 253:1    0   20G  0 lvm  [SWAP]
+[root@d9ivioststv22602 unyoadm01]# swapoff /dev/mapper/rhel-swap
+[root@d9ivioststv22602 unyoadm01]# lvreduce -L 8G /dev/mapper/rhel-swap
+  File system swap found on rhel/swap.
+  File system device usage is not available from libblkid.
+[root@d9ivioststv22602 unyoadm01]# mkswap /dev/mapper/rhel-swap
+mkswap: /dev/mapper/rhel-swap: 警告: 古い swap 署名を消去しています。
+スワップ空間バージョン 1 を設定します。サイズ = 20 GiB (21474832384 バイト)
+ラベルはありません, UUID=9feec86a-c1c8-46ad-96ff-e1c88cfaae35
+[root@d9ivioststv22602 unyoadm01]# swapon /dev/mapper/rhel-swap
+[root@d9ivioststv22602 unyoadm01]# swapon --show
+NAME      TYPE      SIZE USED PRIO
+/dev/dm-1 partition  20G   0B   -2
+[root@d9ivioststv22602 unyoadm01]# lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda             8:0    0   20G  0 disk
+tqsda1          8:1    0  8.9G  0 part
+mqsda2          8:2    0  6.9M  0 part
+vda           252:0    0   50G  0 disk
+tqvda1        252:1    0  600M  0 part /boot/efi
+tqvda2        252:2    0    1G  0 part /boot
+mqvda3        252:3    0 48.4G  0 part
+  tqrhel-root 253:0    0 28.4G  0 lvm  /
+  mqrhel-swap 253:1    0   20G  0 lvm  [SWAP]
+[root@d9ivioststv22602 unyoadm01]#
+
+
+[root@d9ivioststv22602 unyoadm01]# pvs
+  PV         VG   Fmt  Attr PSize  PFree
+  /dev/vda3  rhel lvm2 a--  48.41g    0
+[root@d9ivioststv22602 unyoadm01]# vgs
+  VG   #PV #LV #SN Attr   VSize  VFree
+  rhel   1   2   0 wz--n- 48.41g    0
+[root@d9ivioststv22602 unyoadm01]# lvs
+  LV   VG   Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root rhel -wi-ao---- 28.41g
+  swap rhel -wi-ao---- 20.00g
+[root@d9ivioststv22602 unyoadm01]# lvreduce -L -12g /dev/rhel/swap
+  File system swap found on rhel/swap.
+  File system device usage is not available from libblkid.
+[root@d9ivioststv22602 unyoadm01]# swapoff /dev/mapper/rhel-swap
+[root@d9ivioststv22602 unyoadm01]# swapon --show
+[root@d9ivioststv22602 unyoadm01]# lvreduce -L -12g /dev/rhel/swap
+  File system swap found on rhel/swap.
+  File system device usage is not available from libblkid.
+[root@d9ivioststv22602 unyoadm01]# swapon /dev/mapper/rhel-swap
+[root@d9ivioststv22602 unyoadm01]# swapon --show
+NAME      TYPE      SIZE USED PRIO
+/dev/dm-1 partition  20G   0B   -2
+[root@d9ivioststv22602 unyoadm01]# lvextend -L +12g /dev/rhel/root
+  Insufficient free space: 3072 extents needed, but only 0 available
+[root@d9ivioststv22602 unyoadm01]# swapon --show
+NAME      TYPE      SIZE USED PRIO
+/dev/dm-1 partition  20G   0B   -2
+[root@d9ivioststv22602 unyoadm01]# df -h
+ファイルシス          サイズ  使用  残り 使用% マウント位置
+devtmpfs                4.0M     0  4.0M    0% /dev
+tmpfs                   847M     0  847M    0% /dev/shm
+tmpfs                   339M  5.4M  334M    2% /run
+/dev/mapper/rhel-root    29G  4.9G   24G   17% /
+/dev/vda2              1014M  284M  731M   28% /boot
+/dev/vda1               599M  7.0M  592M    2% /boot/efi
+tmpfs                   170M   52K  170M    1% /run/user/42
+tmpfs                   170M   36K  170M    1% /run/user/1000
+[root@d9ivioststv22602 unyoadm01]# swapoff -v /dev/rhel/swap
+スワップ /dev/rhel/swap を無効化しています
+[root@d9ivioststv22602 unyoadm01]# wipefs -a /dev/rhel/swap
+/dev/rhel/swap: オフセット 0x00000ff6 にある 10 バイト (swap) を消去しました: 53 57 41 50 53 50 41 43 45 32
+[root@d9ivioststv22602 unyoadm01]# lvreduce /dev/rhel/swap -L -12G
+  No file system found on /dev/rhel/swap.
+  Size of logical volume rhel/swap changed from 20.00 GiB (5120 extents) to 8.00 GiB (2048 extents).
+  Logical volume rhel/swap successfully resized.
+[root@d9ivioststv22602 unyoadm01]# mkswap /dev/rhel/swap
+スワップ空間バージョン 1 を設定します。サイズ = 8 GiB (8589930496 バイト)
+ラベルはありません, UUID=a56eeba7-d4e1-45a8-bd21-f7a178c7b53d
+[root@d9ivioststv22602 unyoadm01]# swapon -v /dev/rhel/swap
+swapon: /dev/mapper/rhel-swap: 署名が見つかりました: [ページサイズ=4096, 署名=swap]
+swapon: /dev/mapper/rhel-swap: ページサイズ=4096, スワップサイズ=8589934592, デバイスサイズ=8589934592
+スワップ /dev/mapper/rhel-swap を有効化しています
+[root@d9ivioststv22602 unyoadm01]# cat /proc/swaps
+Filename                                Type            Size            Used            Priority
+/dev/dm-1                               partition       8388604         0               -2
+[root@d9ivioststv22602 unyoadm01]# free -h
+               total        used        free      shared  buff/cache   available
+Mem:           1.7Gi       710Mi       639Mi        11Mi       498Mi       981Mi
+Swap:          8.0Gi          0B       8.0Gi
+[root@d9ivioststv22602 unyoadm01]#
+
+
+
+--------------------------------------------
+swapon --show
+swapoff -v /dev/rhel/swap
+wipefs -a /dev/rhel/swap
+lvresize -l +100%FREE /dev/rhel/root
+xfs_growfs /dev/rhel/root
+lvreduce /dev/rhel/swap -L -12G
+mkswap /dev/rhel/swap
+swapon -v /dev/rhel/swap
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+df -h
+lsblk
+※DISK構成を確認
+--------------------------------------------
+gdisk -l /dev/vda
+sgdisk -s /dev/vda
+gdisk -l /dev/vda
+--------------------------------------------
+gdisk /dev/vda
+※インタラクティブで対応
+　最終パーティーションを削除
+　新規に最終パーティーションを作成
+
+--------------------------------------------
+reboot
+--------------------------------------------
+pvresize /dev/vda3
+vgextend rhel /dev/vda3
+
+※swap関連を一時的に停止
+swapoff -v /dev/rhel/swap
+wipefs -a /dev/rhel/swap
+swapon --show
+※swap関連を一時的に停止
+
+lvreduce /dev/rhel/swap -L -12G
+lvresize -l +100%FREE /dev/rhel/root
+
+※swap関連を設定
+mkswap /dev/rhel/swap
+swapon -v /dev/rhel/swap
+※swap関連を設定
+cat /proc/swaps
+reboot
+lvdisplay
+xfs_growfs /dev/rhel/root
+df -h
+lsblk
+gdisk -l /dev/vda
+--------------------------------------------
