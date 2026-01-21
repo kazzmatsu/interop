@@ -1,1 +1,89 @@
+9189018958@o365.smbcnikko.co.jp
+
+GH-900 基礎
+GH-100 管理者
+GH-200 GitHub Actions
+GH-300 GitHub Copilot
+GH-500 GitHub Advanced Security
+
+GitHub Enterprise Clusd
+GitHub Enterprise Server
+
+github.com
+
+https://teams.microsoft.com/v2/?meetingjoin=true#/l/meetup-join/19:meeting_YzI5YTdkNGEtOGJmZS00NzIyLTgyYzAtMjQzZmMxNjFhNzAx@thread.v2/0?context=%7B%22Tid%22%3A%2272f988bf-86f1-41af-91ab-2d7cd011db47%22%2C%22Oid%22%3A%22c5825cfd-a05b-4288-8c3d-cec2cf365dd6%22%2C%22prid%22%3A%22SR_5S4C6PGV4JLBW5CDNENLCH4CBA%22%7D&anon=true&deeplinkId=7a3a678d-06b5-41c2-ab92-6f2c8a37b529
+
+what's new with Codespaces from GigHub Universe 2022
+https://github.blog/news-insights/product-news/whats-new-with-codespaces-from-github-universe-2022/
+
+Microsoft Agent Framework
+
+https://github.com/hiryamada/notes/blob/main/GH-900-github-foundations/README.md
+https://learn.microsoft.com/ja-jp/collections/66w2a7txpy78r1
+
+https://github.com/hiryamada/notes/blob/main/GH-900-github-foundations/github-skills.md
+
+https://backlog.com/ja/git-tutorial/stepup/01/
+
+https://backlog.com/ja/git-tutorial/pull-request/01/
+
+https://docs.github.com/ja/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-syntax
+
+https://github.com/hiryamada/notes/blob/main/GH-900-github-foundations/README.md
+https://learn.microsoft.com/ja-jp/collections/66w2a7txpy78r1
+
+10:40 -> 10:50 
+
+ご休憩下さい。
+ 
+演習4 をデモしました。
+ 
+演習4の手順書には、Step 3と4で何をすればよいのかが具体的には書かれていないため、たとえば以下のように操作してみてください。
+ 
+Step 3: プルリクエストにコメントする。例: よい提案ですね、ただし絵文字は不要だと思います。
+Step 4: プルリクエストの変更を提案する（絵文字を削除）
+ 
+
+演習4 をデモしました。
+ 
+演習4の手順書には、Step 3と4で何をすればよいのかが具体的には書かれていないため、たとえば以下のように操作してみてください。
+ 
+Step 3: プルリクエストにコメントする。例: よい提案ですね、ただし絵文字は不要だと思います。
+Step 4: プルリクエストの変更を提案する（絵文字を削除）
+ 
+藤本 貴久/FUJIMOTO, TAKAHISA (ccs) (未確認) さんが会議に招待されました。
+
+ 
+github/gitignore: A collection of useful .gitignore templates
+ 
+semantic-kernel/SECURITY.md at main  microsoft/semantic-kernel
+ 
+Takahashi Yusuke (未確認) さんがチャットから退出しました。
+
+ 
+Takahashi Yusuke (未確認) さんが会議に招待されました。
+
+ 
+演習5(45min)+ランチ(1H)
+ 
+13:30から、講義を再開いたします。
+ 
+演習5を実施してください（任意、オプション）
+
+※ランチ後に講師からもデモを行います。
+ 
+演習とランチの順番はおまかせします。
+
+
+↓演習5の補足も参照してください
+https://github.com/hiryamada/notes/blob/main/GH-900-github-foundations/github-skills.md
+
+https://github.com/skills/introduction-to-secret-scanning
+
+https://docs.github.com/ja/enterprise-cloud@latest/code-security/concepts/secret-security/about-secret-scanning
+https://docs.github.com/ja/enterprise-cloud@latest/code-security/concepts/secret-security/about-push-protection
+
+https://qiita.com/jnchito/items/40e0c7d32fde352607be
+
+https://www.linuxfoundation.jp/wp-content/uploads/2023/05/LF-AI-DATA_Managing-OS-Projects-on-Github_ja.pdf
 
